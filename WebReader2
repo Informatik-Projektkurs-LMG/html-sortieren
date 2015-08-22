@@ -1,0 +1,113 @@
+package webreader;                                                              //package
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;                                                             //imports
+
+public class WebReader 
+{
+    
+    public static void main (String[] args) throws IOException 
+    {
+        URL url1;
+        url1 = new URL("http://lisemeitnerschule.de/Internet_SuS_morgen/"
+                + "subst_001.htm");                                             //URL der zu scannenen Seite
+        String gescannt;                                                        //Zwischenspeicher für den Code
+        String[] tabelle;
+        tabelle = new String[1000];                                             //Definition des Arrays, in dem die Daten zum Schluss gespeichert werden
+        
+        
+        gescannt = scan (url1);                                                 //Scannen und Speichern der Website
+        gescannt = tabelleExtrahieren(gescannt);                                //Tabelle aus dem Quellcode herausfiltern
+        gescannt = tabelleBereinigen(gescannt);                                 //Aufeinanderfolgende leere Felder vereinen
+        tabelle = gescannt.split("''");                                         //Trennen der einzelnen Daten
+        tabelleAusgeben(tabelle);                                               //Tabelle mit den Daten ausgeben
+    }
+    
+    
+    
+    private static String scan (URL url) throws IOException                     //Scannen und Speichern der Website
+    {
+        BufferedReader r;
+        r = new BufferedReader(new InputStreamReader(url.openStream()));
+        String rückgabe = null;
+        String line = null;
+        
+        
+        while((line=r.readLine())!=null)
+          rückgabe += line + "\n";                                              //Ergebnis der letzten Stunde
+        
+        return rückgabe;                                                        //Der originale Quellcode wird zurückgegeben
+    }
+    
+    
+    
+    private static String tabelleExtrahieren (String start)                     //Tabelle aus dem Quellcode herausfiltern
+    {
+        String rückgabe;                                                        
+        String[] wichtig;                                                       //Zwischenspeicher
+        
+        
+        wichtig = start.split("Vertretungs-Text");                              //Beginn des wichtigen Teils des Codes bei "Vertretungs-Text"
+        wichtig = wichtig[1].split("Lise");                                     //Ende des wichtigen Teils des Codes bei "Lise"
+        rückgabe = wichtig[0];                                                  //Übergeben des wichtigen Teils
+        rückgabe = rückgabe.replaceAll("<tr>", "\n");                           //Umschreiben der Zeilenumbrüche, damit Java diese erkennen kann
+        rückgabe = rückgabe.replaceAll("\\<.*?\\>", "''");                      //Löschen aller HTML-Ausdrücke und Ersetzen dieser durch "''"
+        rückgabe = rückgabe.replaceAll("(&nbsp)", "''");                        //Löschen aller Leerzeichen und Ersetzen dieser durch "''"
+        rückgabe = rückgabe.replaceAll(";", "''");                              //Löschen aller Semikolons und Ersetzen dieser durch "''"
+        
+        return rückgabe;                                                        //Die herausgelöste und von störenden Anweisungen befreite Tabelle wird zurückgegeben
+    }
+    
+    
+    
+    private static int seitenzahlErmitteln (String start)                       //Ermitteln der zu scannenden Seiten WIRD BISHER NICHT VERWENDET
+    {
+        String rückgabe;
+        String[] wichtig;                                                       //Zwischenspeicher
+        char vorläufigeSeitenzahl;
+        int seitenzahl;
+        
+        wichtig = start.split("Seite");                                         //Beginn des wichtigen Teils des Codes bei "Seite"
+        wichtig = wichtig[1].split("zu");                                       //Ende des wichtigen Teils des Codes bei "zu"
+        rückgabe = wichtig[0];                                                  //Übergeben des wichtigen Teils
+        rückgabe = rückgabe.replaceAll("\\<.*?\\>", "");                        //Löschen aller HTML-Ausdrücke
+        rückgabe = rückgabe.replaceAll("(&nbsp)", "");                          //Löschen aller Leerzeichen
+        rückgabe = rückgabe.replaceAll(";", "");                                //Löschen aller Semikolons
+        vorläufigeSeitenzahl = rückgabe.charAt(5);                              //Ermitteln der Gesamtseitenzahl, die an 5. Stelle des wichtigen Teils steht
+        seitenzahl = (int) (vorläufigeSeitenzahl-'0');                          //Parsen der Seitenzahl von Character zu Integer
+        
+        return seitenzahl;                                                      //Zurückgeben der Gesamtseitenzahl
+    }
+    
+    
+    
+    private static String tabelleBereinigen(String start)                       //Aufeinanderfolgende leere Felder vereinen
+    {
+        String rückgabe;
+        
+        
+        rückgabe = start.replaceAll("Entfall", "''");                           //Löschen der Information "Entfall", um eine strukturierte Tabelle ohne leere Felder zu erhalten
+        for (int i= 0; i<5; i++)
+        {
+            rückgabe = rückgabe.replaceAll("''''", "''");                       //Doppelte leere Felder zu einem vereinen
+        }                                                                       //Wiederholung dieses Arbeitsschritts, um zweifelslos jede doppelte leere Zelle zu erwischen
+        return rückgabe;                                                        //Die bereinigte Tabelle wird zurückgegeben
+    }
+    
+    
+    
+    private static void tabelleAusgeben(String[] tabelle) 
+    {
+      System.out.print("\t\t|\tKlasse(n)\t|\tStunden \t|\t(Fach) "
+              + "\t\t|\t(Lehrer) \t|\tVertreter \t|\tFach \t\t|\tRaum "
+              + "\t\t|\tVertretungstext \n\t\t------------------------------"
+              + "-----------------------------------------------------------"
+              + "-----------------------------------------------------------"
+              + "-----------------------------------------------------\n");     //Ausgeben der ersten Tabellenzeile
+      for (String tabelle1 : tabelle) {
+          System.out.print("\t\t\t" + tabelle1);
+      }                                                                         //Ausgeben der Tabelle
+    }
+}
