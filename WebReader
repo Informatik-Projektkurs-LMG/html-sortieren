@@ -80,7 +80,7 @@ public class WebReader
                 + "-----------------------------------------------------\n");
         
         for (int i=1; i<tabelle.length-4; i++) {
-            System.out.print("\t\t" + i + "\t" + tabelle[i]);
+            System.out.print("\t\t\t" + tabelle[i]);
         }
         
     }
