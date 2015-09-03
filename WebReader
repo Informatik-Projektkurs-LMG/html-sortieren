@@ -1,32 +1,45 @@
-package webreader;                                                              //package
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;                                                             //imports
+import java.net.URL;                                                            //imports
 
 public class WebReader 
 {
-    
+  
+  
     public static void main (String[] args) throws IOException 
     {
         URL url1;
-        url1 = new URL("http://lisemeitnerschule.de/Internet_SuS_morgen/"
-                + "subst_001.htm");                                             //URL der zu scannenen Seite
+        url1 = new URL("http://lisemeitnerschule.de/Internet_SuS_heute/"
+        + "subst_003.htm");                                                     //URL der zu scannenen Seite
         String gescannt;                                                        //Zwischenspeicher für den Code
+        int größeTabelle = 1000;                                                //Größe der Tabelle
         String[] tabelle;
-        tabelle = new String[1000];                                             //Definition des Arrays, in dem die Daten zum Schluss gespeichert werden
+        tabelle = new String[größeTabelle];                                     //Definition des Arrays, in dem die Daten zum Schluss gespeichert werden
         
         
-        gescannt = scan (url1);                                                 //Scannen und Speichern der Website
+        try 
+        {
+          gescannt = scan (url1);
+        } 
+        catch (Exception fehler)
+        {
+          gescannt = IOStream.printDatei();
+        }                                                                       //Scannen und Speichern der Website
         gescannt = tabelleExtrahieren(gescannt);                                //Tabelle aus dem Quellcode herausfiltern
         gescannt = tabelleBereinigen(gescannt);                                 //Aufeinanderfolgende leere Felder vereinen
         tabelle = gescannt.split("''");                                         //Trennen der einzelnen Daten
-        tabelleAusgeben(tabelle);                                               //Tabelle mit den Daten ausgeben
+        tabelleAusgeben(tabelle);                                               //Tabelle mit den Daten ausgeben       
+        
+        System.out.print("\n\n\n\n\n\n");
+        
+        selektieren(tabelle, größeTabelle);
+        
+        
     }
-    
-    
-    
+      
+  
+  
     private static String scan (URL url) throws IOException                     //Scannen und Speichern der Website
     {
         BufferedReader r;
@@ -36,20 +49,22 @@ public class WebReader
         
         
         while((line=r.readLine())!=null)
-          rückgabe += line + "\n";                                              //Ergebnis der letzten Stunde
+        {
+          rückgabe += line + "\n";
+        }                                                                       //Ergebnis der letzten Stunde
         
         return rückgabe;                                                        //Der originale Quellcode wird zurückgegeben
-    }
-    
-    
-    
+      }
+      
+      
+      
     private static String tabelleExtrahieren (String start)                     //Tabelle aus dem Quellcode herausfiltern
     {
         String rückgabe;                                                        
         String[] wichtig;                                                       //Zwischenspeicher
         
         
-        wichtig = start.split("Vertretungs-Text");                              //Beginn des wichtigen Teils des Codes bei "Vertretungs-Text"
+        wichtig = start.split("Text");                                          //Beginn des wichtigen Teils des Codes bei "Vertretungs-Text"
         wichtig = wichtig[1].split("Lise");                                     //Ende des wichtigen Teils des Codes bei "Lise"
         rückgabe = wichtig[0];                                                  //Übergeben des wichtigen Teils
         rückgabe = rückgabe.replaceAll("<tr>", "\n");                           //Umschreiben der Zeilenumbrüche, damit Java diese erkennen kann
@@ -59,9 +74,9 @@ public class WebReader
         
         return rückgabe;                                                        //Die herausgelöste und von störenden Anweisungen befreite Tabelle wird zurückgegeben
     }
-    
-    
-    
+      
+      
+      
     private static int seitenzahlErmitteln (String start)                       //Ermitteln der zu scannenden Seiten WIRD BISHER NICHT VERWENDET
     {
         String rückgabe;
@@ -80,9 +95,9 @@ public class WebReader
         
         return seitenzahl;                                                      //Zurückgeben der Gesamtseitenzahl
     }
-    
-    
-    
+      
+      
+      
     private static String tabelleBereinigen(String start)                       //Aufeinanderfolgende leere Felder vereinen
     {
         String rückgabe;
@@ -95,19 +110,65 @@ public class WebReader
         }                                                                       //Wiederholung dieses Arbeitsschritts, um zweifelslos jede doppelte leere Zelle zu erwischen
         return rückgabe;                                                        //Die bereinigte Tabelle wird zurückgegeben
     }
-    
-    
-    
-    private static void tabelleAusgeben(String[] tabelle) 
+      
+      
+      
+    private static void tabelleAusgeben(String[] start)                         //gibt alle gefundenen Zellen der Tabelle aus (nur in der Entwicklungsphase zur Diagnose verwendet)
     {
-      System.out.print("\t\t|\tKlasse(n)\t|\tStunden \t|\t(Fach) "
-              + "\t\t|\t(Lehrer) \t|\tVertreter \t|\tFach \t\t|\tRaum "
-              + "\t\t|\tVertretungstext \n\t\t------------------------------"
-              + "-----------------------------------------------------------"
-              + "-----------------------------------------------------------"
-              + "-----------------------------------------------------\n");     //Ausgeben der ersten Tabellenzeile
-      for (String tabelle1 : tabelle) {
-          System.out.print("\t\t\t" + tabelle1);
-      }                                                                         //Ausgeben der Tabelle
+        System.out.print("\t\t|\tKlasse(n)\t|\tStunden \t|\t(Fach) "
+                + "\t\t|\t(Lehrer) \t|\tVertreter \t|\tFach \t\t|\tRaum "
+                + "\t\t|\tVertretungstext \n\t\t"
+                + "-----------------------------------------------------------"
+                + "-----------------------------------------------------------"
+                + "-----------------------------------------------------------"
+                + "------------------------\n");                                //Ausgeben der ersten Tabellenzeile
+        for (int i = 2; i<start.length-3; i++) {
+            System.out.print("\t\t\t" + start[i]);
+        }                                                                       //Ausgeben der Tabelle
     }
-}
+      
+    private static Vertretung[] selektieren(String[] start, int g)              //wandelt jede Zeile der Tabelle in ein Objekt der Klasse Vertretung um
+    {
+        int zähler1 = 2;                                                        //Zählvariable für das Ursprungsarray
+        int zähler2 = 0;                                                        //Zählvariable für das Rückgabearray
+        Vertretung[] rückgabe = new Vertretung[g];                              //Rückgabearray
+        
+        for (String start1 : start) {
+            if (start[zähler1+9] != null) {                                     
+                if (start[zähler1+9].matches("[1]?[0-9](\\s[-]\\s[1]?[0-9])?")) //Überprüfung, ob ein Vertretungstext vorhanden ist
+                {
+                    rückgabe[zähler2] = new Vertretung(start[zähler1+0],
+                            start[zähler1+1], start[zähler1+2],
+                            start[zähler1+3], start[zähler1+4], 
+                            start[zähler1+5], start[zähler1+6]);                //Objekt ohne Vertretungstext wird erstellt
+                    zähler1 += 7;
+                    zähler2 ++;                                                 //Zähler werden erhöht
+                } else if (start[zähler1+10].matches("[1]?[0-9](\\s[-]\\s[1]?[0-9])?")){
+                    rückgabe[zähler2] = new Vertretung(start[zähler1+0],
+                            start[zähler1+1], start[zähler1+2],
+                            start[zähler1+3], start[zähler1+4],
+                            start[zähler1+5], start[zähler1+6], 
+                            start[zähler1+7]);                                  //Vertretung mit Vertretungstext wird erstellt
+                    zähler1 += 8;
+                    zähler2 ++;                                                 //Zähler werden erhöht
+                }
+            }
+        }
+        
+        if (start[zähler1+7] == null)                                           //Überprüfung, ob die letzte Zeile einen Vertretungstext hat
+        {
+            rückgabe[zähler2] = new Vertretung(start[zähler1+0], 
+                            start[zähler1+1], start[zähler1+2], 
+                            start[zähler1+3], start[zähler1+4], 
+                            start[zähler1+5], start[zähler1+6]);                //Objekt ohne Vertretungstext wird erstellt
+        } else {
+            rückgabe[zähler2] = new Vertretung(start[zähler1+0], 
+                            start[zähler1+1], start[zähler1+2], 
+                            start[zähler1+3], start[zähler1+4], 
+                            start[zähler1+5], start[zähler1+6], 
+                            start[zähler1+7]);                                  //Vertretung mit Vertretungstext wird erstellt
+        }
+        
+    return rückgabe;                                                            //Zurückgeben des Arrays, in dem die Vertretungen gespeichert sind
+    } 
+}  
