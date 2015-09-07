@@ -1,0 +1,42 @@
+package Vertretungsplan;
+
+public class KurseEinlesen {
+    
+    public static String[] kurse (String datei)                                 //gibt die Kurse des Schülers zurück
+    {
+        String[] rückgabe;
+        rückgabe = new String[14];                                              //Rückgabearray
+        String[] tempKurse;
+        tempKurse = new String[15];                                             //Zwischenspeicher
+        String gescannt;                                                        //Zwischenspeicher für das Eingelesene
+        
+        gescannt = IOStream.printDatei(datei);                                  //Klasse und Kurse werden eingelesen
+        
+        tempKurse = gescannt.split("\n");                                       //Klasse und einzelne Kurse werden getrennt
+        
+        for (int i = 1; i<tempKurse.length; i++)                                //an der ersten Stelle steht die Klasse des Schülers
+        {
+            rückgabe[i-1] = tempKurse[i];
+        }
+        
+        
+        return rückgabe;
+    }
+    
+    public static String klasse (String datei)                                  //gibt die Klasse des Schülers zurück
+    {
+        String rückgabe;                                                        //Rückgabestring
+        String[] tempKurse;
+        tempKurse = new String[15];                                             //Zwischenspeicher
+        String gescannt;                                                        //Zwischenspeicher für das Eingelesene
+        
+        gescannt = IOStream.printDatei(datei);                                  //Klasse und Kurse werden eingelesen
+        
+        tempKurse = gescannt.split("\n");                                       //Klasse und einzelne Kurse werden getrennt
+
+        rückgabe = tempKurse[0];                                                //an der ersten Stelle steht die Klasse des Schülers
+        
+        return rückgabe;
+    }
+    
+}
