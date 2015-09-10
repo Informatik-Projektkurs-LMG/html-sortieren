@@ -1,0 +1,37 @@
+package Vertretungsplan;
+
+public class KurseFinden {
+    
+    public static Vertretung[] kurseFinden(Vertretung[] start, String klasse, 
+            String[] kurse)                                                     //gibt ein Array zurück, in dem alle Vertretungen stehen, die den Schüler betreffen
+    {
+        
+        Vertretung[] rückgabe;
+        rückgabe = new Vertretung[11];                                          //Rückgabearray
+        int zähler;                                                             //Zähler für das Startarray
+        int zähler2 = 0;                                                        //Zähler für das Rückgabearray
+        
+        for (String kurse1 : kurse)
+        {
+            zähler = 0;
+            while (start[zähler] != null)
+            {
+                if (("(.*" + klasse + ".*)").equals(start[zähler].getKlasse()) 
+                        && kurse1.equals(start[zähler].getAltesFach()))         //Überprüfung, ob die Klasse und der Kurs übereinstimmt
+                {
+                    rückgabe[zähler2] = start[zähler];                          //Übertragen in das Rückgabearray
+                    zähler2++;                                                  //Zähler für das Rückgabearray wird erhöht
+                } else if (klasse.equals(start[zähler].getKlasse()) 
+                        && kurse1.equals(start[zähler].getAltesFach()))         //Überprüfung, ob die Klasse und der Kurs übereinstimmt
+                {
+                    rückgabe[zähler2] = start[zähler];                          //Übertragen in das Rückgabearray
+                    zähler2++;                                                  //Zähler für das Rückgabearray wird erhöht
+                }
+                    
+                zähler++;                                                       //Zähler für das Startarray wird erhöht
+            }
+        }
+        return rückgabe;
+    }
+    
+}
