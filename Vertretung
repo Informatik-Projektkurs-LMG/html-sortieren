@@ -1,0 +1,68 @@
+package Vertretungsplan;
+
+public class Vertretung {
+    
+    private final String klasse, stunden, altesFach, alterLehrer, neuesFach, 
+            neuerLehrer, vertretungstext, neuerRaum;
+    
+    public Vertretung (String klasse, String stunden, String altesFach, 
+            String alterLehrer, String neuerLehrer, String neuesFach, 
+            String neuerRaum, String vertretungstext)                           //Konstruktor mit Vertretungstext
+    {
+        this.klasse = klasse;
+        this.stunden = stunden;
+        this.altesFach = altesFach;
+        this.alterLehrer = alterLehrer;
+        this.neuesFach = neuesFach;
+        this.neuerLehrer = neuerLehrer;
+        this.neuerRaum = neuerRaum;
+        this.vertretungstext = vertretungstext;
+    }
+    
+    public Vertretung (String klasse, String stunden, String altesFach, 
+            String alterLehrer, String neuerLehrer, String neuesFach, 
+            String neuerRaum) 
+    {
+        this.klasse = klasse;
+        this.stunden = stunden;
+        this.altesFach = altesFach;
+        this.alterLehrer = alterLehrer;
+        this.neuesFach = neuesFach;
+        this.neuerLehrer = neuerLehrer;
+        this.neuerRaum = neuerRaum;
+        this.vertretungstext = null;                                            //Konstruktor ohne Vertretungstext
+    }
+    
+    public String getKlasse () {
+        return klasse;
+    }
+    
+    public String getStunden () {
+        return stunden;
+    }
+    
+    public String getAltesFach () {
+        return altesFach;
+    }
+    
+    public String getAlterLehrer () {
+        return alterLehrer;
+    }
+    
+    public String getNeuesFach () {
+        return neuesFach;
+    }
+    
+    public String getNeuerLehrer () {
+        return neuerLehrer;
+    }
+    
+    public String getNeuerRaum () {
+        return neuerRaum;
+    }
+    
+    public String getVertretungstext () {
+        return vertretungstext;
+    }
+    
+}
