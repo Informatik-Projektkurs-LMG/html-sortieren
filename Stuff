@@ -1,8 +1,12 @@
 package Vertretungsplan;
 
 public class Stuff {
-    
-    public static int tatsächlicheLänge(Vertretung[] vertretungen)              //überprüft, wie viele Felder eines Arrays belegt sind
+
+/** Überprüft, wie viele Felder eines Arrays belegt sind
+  * @param vertretung der zu überprüfende Array (Datentyp, des Arrays, ist eine Instanz der Klasse Vetretung)
+  * @return anzahl der belegten Felder 
+  */
+  public static int tatsächlicheLänge(Vertretung[] vertretungen)             
     {
         int zähler = 0;
         
@@ -16,7 +20,12 @@ public class Stuff {
         return zähler;
     }
     
-    public static int tatsächlicheLänge(String[] start)                         //überprüft, wie viele Felder eines Arrays belegt sind
+/** Überprüft, wie viele Felder eines Arrays belegt sind
+  * @param vertretung der zu überprüfende Array (Datentyp, des Arrays, ist ein String)
+  * @return anzahl der belegten Felder 
+  */
+    
+    public static int tatsächlicheLänge(String[] start)
     {
         int zähler = 0;
         
