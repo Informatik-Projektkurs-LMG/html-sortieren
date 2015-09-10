@@ -1,5 +1,8 @@
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
               DER PFAD DER .txt - DATEIEN MUSS ANGEPASST WERDEN
+
+          DIE Quellcode - .txt - DATEIEN MÜSSEN NEU ERSTELLT WERDEN
+       (MUSTER: "VertretungsplanSeite0"<Seitenzahl><heute/morgen>".txt"
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 */
 
