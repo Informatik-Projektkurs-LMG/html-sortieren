@@ -1,44 +1,147 @@
+/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+              DER PFAD DER .txt - DATEIEN MUSS ANGEPASST WERDEN
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+*/
+
+package Vertretungsplan;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;                                                            //imports
 
-public class WebReader 
+public class WebReader
 {
-  
-  
-    public static void main (String[] args) throws IOException 
+    public static Vertretung[] webreader (String tag) 
+            throws MalformedURLException, IOException                           //Main für das Scannen
     {
-        URL url1;
-        url1 = new URL("http://lisemeitnerschule.de/Internet_SuS_heute/"
-        + "subst_003.htm");                                                     //URL der zu scannenen Seite
+        int anzahlSeiten;
+        URL[] url;
+        url = new URL[9];                                                      //URL der zu scannenen Seite
+        String[] pfade;
+        pfade = new String[9];
+        for (int i=0; i<9; i++)
+        {
+            url[i] = new URL("http://lisemeitnerschule.de/Internet_SuS_" + tag 
+                    + "/subst_00" + (i+1) + ".htm");
+            pfade[i] = "M:\\Schule\\Informatik-Projektkurs\\"
+                + "Vertretungsplan\\src\\Vertretungsplan\\"
+                + "VertretungsplanSeite0" + (i+1) + tag + ".txt";
+        }
+        Vertretung[] tempVertretungen;
+        tempVertretungen = new Vertretung[15];
+        Vertretung[] vertretungen;
+        vertretungen = new Vertretung[150];
+        
+        
+        anzahlSeiten = seiten(url[0], pfade[0]);
+        tempVertretungen = auslesen(url[0], pfade[0]);
+        System.arraycopy(tempVertretungen, 0, vertretungen, 0, 15);
+        
+        if (anzahlSeiten > 1)
+        {                                             //URL der zu scannenden Seite
+            tempVertretungen = auslesen(url[1], pfade[1]);
+            System.arraycopy(tempVertretungen, 0, vertretungen, 15, 15);        //Arrays werden zusammengetragen
+        }
+        
+        if (anzahlSeiten > 2)
+        {                                                 //URL der zu scannenden Seite
+            tempVertretungen = auslesen(url[2],pfade[2]);
+            System.arraycopy(tempVertretungen, 0, vertretungen, 30, 15);        //Arrays werden zusammengetragen
+        }
+        
+        if (anzahlSeiten > 3)
+        {                                                 //URL der zu scannenden Seite
+            tempVertretungen = auslesen(url[3], pfade[3]);
+            System.arraycopy(tempVertretungen, 0, vertretungen, 45, 15);        //Arrays werden zusammengetragen
+        }
+        
+        if (anzahlSeiten > 4)
+        {                                                //URL der zu scannenden Seite
+            tempVertretungen = auslesen(url[4], pfade[4]);
+            System.arraycopy(tempVertretungen, 0, vertretungen, 60, 15);        //Arrays werden zusammengetragen
+        }
+        
+        if (anzahlSeiten > 5)
+        {                                               //URL der zu scannenden Seite
+            tempVertretungen = auslesen(url[5], pfade[5]);
+            System.arraycopy(tempVertretungen, 0, vertretungen, 75, 15);        //Arrays werden zusammengetragen
+        }
+        
+        if (anzahlSeiten > 6)
+        {                                                //URL der zu scannenden Seite
+            tempVertretungen = auslesen(url[6], pfade[6]);
+            System.arraycopy(tempVertretungen, 0, vertretungen, 90, 15);        //Arrays werden zusammengetragen
+        }
+        
+        if (anzahlSeiten > 7)
+        {                                                //URL der zu scannenden Seite
+            tempVertretungen = auslesen(url[7], pfade[7]);
+            System.arraycopy(tempVertretungen, 0, vertretungen, 105, 15);       //Arrays werden zusammengetragen
+        }
+        
+        if (anzahlSeiten > 8)
+        {                                                //URL der zu scannenden Seite
+            tempVertretungen = auslesen(url[8], pfade[8]);
+            System.arraycopy(tempVertretungen, 0, vertretungen, 120, 15);       //Arrays werden zusammengetragen
+        }
+        return vertretungen;
+    }
+    
+    private static Vertretung[] auslesen (URL url, String datei) 
+            throws IOException 
+    {
         String gescannt;                                                        //Zwischenspeicher für den Code
-        int größeTabelle = 1000;                                                //Größe der Tabelle
         String[] tabelle;
-        tabelle = new String[größeTabelle];                                     //Definition des Arrays, in dem die Daten zum Schluss gespeichert werden
+        tabelle = new String[1000];                                             //Definition des Arrays, in dem die Daten zwischengespeichert
+        Vertretung[] vertretungen;
+        vertretungen = new Vertretung[15];                                      //Rückgabearray
         
         
         try 
         {
-          gescannt = scan (url1);
+          gescannt = scan (url);
         } 
-        catch (Exception fehler)
+        catch (Exception fehler)                                                //Notlösung über .txt-Datei (FUNKTIONIERT NICHT!!!)
         {
-          gescannt = IOStream.printDatei();
+          gescannt = IOStream.printDatei(datei);
         }                                                                       //Scannen und Speichern der Website
-        gescannt = tabelleExtrahieren(gescannt);                                //Tabelle aus dem Quellcode herausfiltern
+        gescannt = tabelleExtrahieren(gescannt, "Text", "Lise");                //Tabelle aus dem Quellcode herausfiltern
         gescannt = tabelleBereinigen(gescannt);                                 //Aufeinanderfolgende leere Felder vereinen
         tabelle = gescannt.split("''");                                         //Trennen der einzelnen Daten
-        tabelleAusgeben(tabelle);                                               //Tabelle mit den Daten ausgeben       
         
-        System.out.print("\n\n\n\n\n\n");
+        vertretungen = selektieren(tabelle);                                    //Daten in Objekte umwandeln
         
-        selektieren(tabelle, größeTabelle);
+        return vertretungen;
         
         
     }
       
-  
+    private static int seiten (URL url, String datei) 
+            throws MalformedURLException
+    {
+        String gescannt;                                                        //Zwischenspeicher für den Code
+        char vorläufigeSeitenzahl;                                              //vorläufige Variable für die extrahierte Seitenzahl
+        int seitenzahl;                                                         //Rückgabevariable
+        
+        
+        try 
+        {
+          gescannt = scan (url);
+        } 
+        catch (Exception fehler)
+        {
+          gescannt = IOStream.printDatei(datei);
+        }                                                                       //Scannen und Speichern der Website
+        gescannt = tabelleExtrahieren(gescannt, "Seite", "zu");                 //Tabelle aus dem Quellcode herausfiltern
+        gescannt = tabelleBereinigen(gescannt);                                 //Aufeinanderfolgende leere Felder vereinen
+        
+        vorläufigeSeitenzahl = gescannt.charAt(5);                              //Ermitteln der Gesamtseitenzahl, die an 5. Stelle des wichtigen Teils steht
+        seitenzahl = (int) (vorläufigeSeitenzahl-'0');                          //Parsen der Seitenzahl von Character zu Integer
+        
+        return seitenzahl;                                                      //Zurückgeben der Gesamtseitenzahl
+    }
   
     private static String scan (URL url) throws IOException                     //Scannen und Speichern der Website
     {
@@ -51,52 +154,27 @@ public class WebReader
         while((line=r.readLine())!=null)
         {
           rückgabe += line + "\n";
-        }                                                                       //Ergebnis der letzten Stunde
+        }
         
         return rückgabe;                                                        //Der originale Quellcode wird zurückgegeben
       }
       
-      
-      
-    private static String tabelleExtrahieren (String start)                     //Tabelle aus dem Quellcode herausfiltern
+    private static String tabelleExtrahieren (String quellcode, String start, 
+            String ende)                                                        //Tabelle aus dem Quellcode herausfiltern !!!AUS DEM INTERNET!!!
     {
-        String rückgabe;                                                        
+        String rückgabe;                                                        //Rückgabevariable
         String[] wichtig;                                                       //Zwischenspeicher
         
         
-        wichtig = start.split("Text");                                          //Beginn des wichtigen Teils des Codes bei "Vertretungs-Text"
-        wichtig = wichtig[1].split("Lise");                                     //Ende des wichtigen Teils des Codes bei "Lise"
+        wichtig = quellcode.split(start);                                       //Beginn des wichtigen Teils des Codes bei übergebenen Variable
+        wichtig = wichtig[1].split(ende);                                       //Ende des wichtigen Teils des Codes bei übergebenen Variable
         rückgabe = wichtig[0];                                                  //Übergeben des wichtigen Teils
-        rückgabe = rückgabe.replaceAll("<tr>", "\n");                           //Umschreiben der Zeilenumbrüche, damit Java diese erkennen kann
         rückgabe = rückgabe.replaceAll("\\<.*?\\>", "''");                      //Löschen aller HTML-Ausdrücke und Ersetzen dieser durch "''"
         rückgabe = rückgabe.replaceAll("(&nbsp)", "''");                        //Löschen aller Leerzeichen und Ersetzen dieser durch "''"
         rückgabe = rückgabe.replaceAll(";", "''");                              //Löschen aller Semikolons und Ersetzen dieser durch "''"
         
         return rückgabe;                                                        //Die herausgelöste und von störenden Anweisungen befreite Tabelle wird zurückgegeben
     }
-      
-      
-      
-    private static int seitenzahlErmitteln (String start)                       //Ermitteln der zu scannenden Seiten WIRD BISHER NICHT VERWENDET
-    {
-        String rückgabe;
-        String[] wichtig;                                                       //Zwischenspeicher
-        char vorläufigeSeitenzahl;
-        int seitenzahl;
-        
-        wichtig = start.split("Seite");                                         //Beginn des wichtigen Teils des Codes bei "Seite"
-        wichtig = wichtig[1].split("zu");                                       //Ende des wichtigen Teils des Codes bei "zu"
-        rückgabe = wichtig[0];                                                  //Übergeben des wichtigen Teils
-        rückgabe = rückgabe.replaceAll("\\<.*?\\>", "");                        //Löschen aller HTML-Ausdrücke
-        rückgabe = rückgabe.replaceAll("(&nbsp)", "");                          //Löschen aller Leerzeichen
-        rückgabe = rückgabe.replaceAll(";", "");                                //Löschen aller Semikolons
-        vorläufigeSeitenzahl = rückgabe.charAt(5);                              //Ermitteln der Gesamtseitenzahl, die an 5. Stelle des wichtigen Teils steht
-        seitenzahl = (int) (vorläufigeSeitenzahl-'0');                          //Parsen der Seitenzahl von Character zu Integer
-        
-        return seitenzahl;                                                      //Zurückgeben der Gesamtseitenzahl
-    }
-      
-      
       
     private static String tabelleBereinigen(String start)                       //Aufeinanderfolgende leere Felder vereinen
     {
@@ -111,8 +189,6 @@ public class WebReader
         return rückgabe;                                                        //Die bereinigte Tabelle wird zurückgegeben
     }
       
-      
-      
     private static void tabelleAusgeben(String[] start)                         //gibt alle gefundenen Zellen der Tabelle aus (nur in der Entwicklungsphase zur Diagnose verwendet)
     {
         System.out.print("\t\t|\tKlasse(n)\t|\tStunden \t|\t(Fach) "
@@ -126,12 +202,12 @@ public class WebReader
             System.out.print("\t\t\t" + start[i]);
         }                                                                       //Ausgeben der Tabelle
     }
-      
-    private static Vertretung[] selektieren(String[] start, int g)              //wandelt jede Zeile der Tabelle in ein Objekt der Klasse Vertretung um
+    
+    private static Vertretung[] selektieren(String[] start)                     //wandelt jede Zeile der Tabelle in ein Objekt der Klasse Vertretung um
     {
         int zähler1 = 2;                                                        //Zählvariable für das Ursprungsarray
         int zähler2 = 0;                                                        //Zählvariable für das Rückgabearray
-        Vertretung[] rückgabe = new Vertretung[g];                              //Rückgabearray
+        Vertretung[] rückgabe = new Vertretung[15];                             //Rückgabearray
         
         for (String start1 : start) {
             if (start[zähler1+9] != null) {                                     
@@ -141,15 +217,17 @@ public class WebReader
                             start[zähler1+1], start[zähler1+2],
                             start[zähler1+3], start[zähler1+4], 
                             start[zähler1+5], start[zähler1+6]);                //Objekt ohne Vertretungstext wird erstellt
-                    zähler1 += 7;
+                    zähler1 += 8;
                     zähler2 ++;                                                 //Zähler werden erhöht
-                } else if (start[zähler1+10].matches("[1]?[0-9](\\s[-]\\s[1]?[0-9])?")){
+                } else if (start[zähler1+10].matches("[1]?[0-9]"
+                        + "(\\s[-]\\s[1]?[0-9])?"))
+                {
                     rückgabe[zähler2] = new Vertretung(start[zähler1+0],
                             start[zähler1+1], start[zähler1+2],
                             start[zähler1+3], start[zähler1+4],
                             start[zähler1+5], start[zähler1+6], 
                             start[zähler1+7]);                                  //Vertretung mit Vertretungstext wird erstellt
-                    zähler1 += 8;
+                    zähler1 += 9;
                     zähler2 ++;                                                 //Zähler werden erhöht
                 }
             }
@@ -170,5 +248,6 @@ public class WebReader
         }
         
     return rückgabe;                                                            //Zurückgeben des Arrays, in dem die Vertretungen gespeichert sind
-    } 
-}  
+    }
+    
+}
