@@ -1,0 +1,35 @@
+package Vertretungsplan;
+
+import java.io.*;                                                               //import
+
+public class IOStream  {
+
+  public static String printDatei(String datei)                                 //liest .txt-Dateien ein !!!AUS DEM INTERNET!!!
+  {
+    FileReader fr;
+    BufferedReader br;
+    String quelltext = "";
+    try {
+        fr = new FileReader(datei);
+        br = new BufferedReader(fr);
+          
+          
+        // Textzeilen der Datei einlesen und auf Konsole ausgeben:
+        String zeile;
+        zeile = br.readLine();
+        while (zeile != null) {
+            quelltext = quelltext + zeile + "\n";
+            
+            zeile = br.readLine();
+        }
+          
+            fr.close();
+        }
+        catch (IOException e){
+            System.out.println("Fehler beim Lesen der Datei " + datei);
+            System.out.println(e.toString());
+        }
+        return quelltext;
+    }
+  
+}

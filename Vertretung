@@ -1,11 +1,13 @@
+package Vertretungsplan;
+
 public class Vertretung {
     
     private final String klasse, stunden, altesFach, alterLehrer, neuesFach, 
             neuerLehrer, vertretungstext, neuerRaum;
     
     public Vertretung (String klasse, String stunden, String altesFach, 
-            String alterLehrer, String neuesFach, String neuerLehrer, 
-            String neuerRaum, String vertretungstext) 
+            String alterLehrer, String neuerLehrer, String neuesFach, 
+            String neuerRaum, String vertretungstext)                           //Konstruktor mit Vertretungstext
     {
         this.klasse = klasse;
         this.stunden = stunden;
@@ -18,7 +20,7 @@ public class Vertretung {
     }
     
     public Vertretung (String klasse, String stunden, String altesFach, 
-            String alterLehrer, String neuesFach, String neuerLehrer, 
+            String alterLehrer, String neuerLehrer, String neuesFach, 
             String neuerRaum) 
     {
         this.klasse = klasse;
@@ -28,7 +30,7 @@ public class Vertretung {
         this.neuesFach = neuesFach;
         this.neuerLehrer = neuerLehrer;
         this.neuerRaum = neuerRaum;
-        this.vertretungstext = null;
+        this.vertretungstext = null;                                            //Konstruktor ohne Vertretungstext
     }
     
     public String getKlasse () {
@@ -62,4 +64,5 @@ public class Vertretung {
     public String getVertretungstext () {
         return vertretungstext;
     }
+    
 }

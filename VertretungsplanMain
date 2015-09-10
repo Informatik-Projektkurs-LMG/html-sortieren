@@ -1,0 +1,67 @@
+/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+              DER PFAD DER .txt - DATEIEN MUSS ANGEPASST WERDEN
+
+          DIE Quellcode - .txt - DATEIEN MÜSSEN NEU ERSTELLT WERDEN
+       (MUSTER: "VertretungsplanSeite0"<Seitenzahl><heute/morgen>".txt"
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+*/
+
+package Vertretungsplan;
+
+import java.io.IOException;                                                     //import
+
+public class VertretungsplanMain {
+    
+    public static void main (String[] args) throws IOException
+    {
+        try
+        {
+            String klasse;                                                      //Klasse des Schülers
+            String[] kurse;                                                     //Kurse des Schülers
+            Vertretung[] vertretungen;                                          //alle Vertretungen des Tages
+            Vertretung[] zutreffendeVertretungenHeute;                          //zutreffende Vertretungen
+            Vertretung[] zutreffendeVertretungenMorgen;
+            Vertretung[] tempZutreffendeVertretungen;                           //Zwischenspeicher
+            String[] tempKurse;                                                 //Zwischenspeicher
+            
+            klasse = KurseEinlesen.klasse("M:\\Schule\\Informatik-Projektkurs\\"
+            + "Vertretungsplan\\src\\Vertretungsplan\\Kurs.txt");               //Klasse wird eingelesen
+            tempKurse = KurseEinlesen.kurse("M:\\Schule\\"
+            + "Informatik-Projektkurs\\Vertretungsplan\\src\\"
+            + "Vertretungsplan\\Kurs.txt");                                     //Kurse werden eingelesen
+            
+            kurse = new String[Stuff.tatsächlicheLänge(tempKurse)];
+            System.arraycopy(tempKurse, 0, kurse, 0, kurse.length);             //Array mit den Kursen wird erstellt und belegt
+            
+            vertretungen = WebReader.webreader("heute");
+            tempZutreffendeVertretungen = KurseFinden.kurseFinden(vertretungen, 
+                    klasse, kurse);
+            
+            zutreffendeVertretungenHeute = new Vertretung[Stuff.tatsächlicheLänge
+                    (tempZutreffendeVertretungen)];
+            System.arraycopy(tempZutreffendeVertretungen, 0, 
+                    zutreffendeVertretungenHeute, 0, 
+                    zutreffendeVertretungenHeute.length);//Array mit den Vertretungen wird erstellt und belegt
+            
+            System.out.println(zutreffendeVertretungenHeute.length);
+            
+            
+            vertretungen = WebReader.webreader("morgen");
+            tempZutreffendeVertretungen = KurseFinden.kurseFinden(vertretungen, 
+                    klasse, kurse);
+            zutreffendeVertretungenMorgen = new Vertretung[Stuff.tatsächlicheLänge
+                    (tempZutreffendeVertretungen)];
+            System.arraycopy(tempZutreffendeVertretungen, 0, 
+                    zutreffendeVertretungenMorgen, 0, 
+                    zutreffendeVertretungenMorgen.length);//Array mit den Vertretungen wird erstellt und belegt
+            
+            System.out.println(zutreffendeVertretungenMorgen.length);
+            
+            }
+            catch (Exception fehler)                                                //Notlösung über .txt-Datei (FUNKTIONIERT NICHT!!!)
+            {
+            System.out.println("FEHLER: \n\n" + fehler);                        //Ausgabe eines womöglichen Fehlers
+            }
+    }
+    
+}
