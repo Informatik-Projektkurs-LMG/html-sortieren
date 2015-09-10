@@ -1,0 +1,33 @@
+package Vertretungsplan;
+
+public class Stuff {
+    
+    public static int tatsächlicheLänge(Vertretung[] vertretungen)              //überprüft, wie viele Felder eines Arrays belegt sind
+    {
+        int zähler = 0;
+        
+        for (Vertretung v : vertretungen)
+        {
+            if (v!=null)
+            {
+                zähler++;
+            }
+        }
+        return zähler;
+    }
+    
+    public static int tatsächlicheLänge(String[] start)                         //überprüft, wie viele Felder eines Arrays belegt sind
+    {
+        int zähler = 0;
+        
+        for (String s : start)
+        {
+            if (s!=null)
+            {
+                zähler++;
+            }
+        }
+        return zähler;
+    }
+    
+}
