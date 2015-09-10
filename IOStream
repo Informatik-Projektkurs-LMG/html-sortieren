@@ -4,7 +4,7 @@ import java.io.*;                                                               
 
 public class IOStream  {
 
-  public static String printDatei(String datei)                                 //liest .txt-Dateien ein
+  public static String printDatei(String datei)                                 //liest .txt-Dateien ein !!!AUS DEM INTERNET!!!
   {
     FileReader fr;
     BufferedReader br;
